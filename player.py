@@ -10,10 +10,10 @@ class Player():
         self.hp = 30
         self.dpt = 3
         self.pos = [2, 2]
-        self.inv = ['Bag of dice']
         self.dice = [BasicDice(), BasicDice(), BasicDice(), BasicDice(), BasicDice()]
         self.souls = 0
-        self.desc = {'Bag of dice':'A bag for dice'}
+        self.act = 1
+        self.z = False
     def attack(self, e):
         print('Time to roll the dice')
         zzz(1)
@@ -170,7 +170,7 @@ class Caroline():
             zzz(1)
             print('Caroline: Kitty, I made these dice for you!')
             zzz(1)
-            player.dice.append(FriendshipDice)
+            player.dice.append(FriendshipDice())
             print('Caroline: They have the power of ours friendship!')
             zzz(1)
             print('Caroline: With the skills you gave me I can even defeat the...')
@@ -190,14 +190,14 @@ class Caroline():
 def generate_floor(floor, w):
     shadow = []
     for i in range(w):
-        shadow.append([0]*w)
+        shadow.append([0 for i in range(w)])
     shadow[w//2][w//2] = 1
     o = [w//2, w//2]
     stack = []
     for i in range(random.randint(2, 4)):
         stack.append(o)
     ways = [[0, 1], [1, 0], [-1, 0], [0, -1]]
-    c = random.randint(w+2, w+6)
+    c = random.randint((w**2)//2-5, (w**2)//2+1)
     while stack != [] and c > 0:
         cur = stack.pop(0)
         f = True
@@ -238,7 +238,7 @@ def generate_floor(floor, w):
     for i in range(s):
         pool.append('$')
     for i in range(e):
-        pool.append('#')
+        pool.append('X')
     for i in range(r):
         pool.append('&')
     for i in range(c-sum((s, e, r))):
@@ -270,9 +270,9 @@ def drawUI(player, floor, sightmap):
     update_sightmap(sightmap, player)
     floorm = []
     for i in range(len(floor)):
-        floorm.append([' ']*len(floor))
-    for i in range(5):
-        for g in range(5):
+        floorm.append([' ' for i in range(len(floor))])
+    for i in range(len(floor)):
+        for g in range(len(floor)):
             if sightmap[i][g] == -1:
                 floorm[i][g] = '*'
             elif sightmap[i][g] == 0 and floor[i][g] != ' ':
@@ -280,22 +280,74 @@ def drawUI(player, floor, sightmap):
             else:
                 floorm[i][g] = floor[i][g]
     floorm[player.pos[0]][player.pos[1]] = '^'
+    dif = (player.act-1)*2
+    if dif < 0:
+        dif = 4
+    s = '-'*((5+dif)*2+1)
     print(f' HP: {player.hp}                                                                                                                                        SOULS: {player.souls}')
-    print(f'                                                                                                                                                         -----------')
-    print(f'                                                                                                                                                        |', *floorm[0], '|')
-    print(f'   ^                                                                                                                                                    |', *floorm[1], '|')
-    print(f' <   > - to Move                                                                                                                                        |', *floorm[2], '|')
-    print(f'   v                                                                                                                                                    |', *floorm[3], '|')
-    print(f'                                                                                                                                                        |', *floorm[4], '|')
-    print(f'                                                                                                                                                         -----------')
-def end_cutscene():
-    print('HELLO, PUPPET, THANK YOU FOR THE SOULS')
+    print(f'                                                                                                                                                         {s}')
+    if dif > 0:
+            print(f'                                                                                                                                                        |', *floorm[0], '|')
+            print(f'                                                                                                                                                        |', *floorm[1], '|')
+    if dif > 2:
+            print(f'                                                                                                                                                        |', *floorm[2], '|')
+            print(f'                                                                                                                                                        |', *floorm[3], '|')
+    print(f'                                                                                                                                                        |', *floorm[0+dif], '|')
+    print(f'   ^                                                                                                                                                    |', *floorm[1+dif], '|')
+    print(f' <   > - to Move                                                                                                                                        |', *floorm[2+dif], '|')
+    print(f'   v                                                                                                                                                    |', *floorm[3+dif], '|')
+    print(f'                                                                                                                                                        |', *floorm[4+dif], '|')
+    print(f'                                                                                                                                                         {s}')
+def next_act(player, sightmap, floor):
+    d = {2: 'ACT 2 - The Growth', 3: 'ACT 3 - The Realization'}
+    print('YES, PUPPET')
     zzz(1)
-    print('RETURN BACK, PUPPET')
+    print('I GIVE YOU MY BLESSING')
+    player.maxhp += 318
     zzz(1)
-    print('YOU DIED')
+    print(' + 318 max hp')
     zzz(1)
-    print('You black out')
+    player.hp = player.maxhp
+    w = player.act*2+3
+    print('\n'*45)
+    input(d[player.act])
+    floor = [[' ' for i in range(w)] for g in range(w)]
+    sightmap = [[-1 for i in range(w)] for g in range(w)]
+    player.pos = [w//2, w//2]
+    generate_floor(floor, w)
+    return floor, sightmap
+def bad_end_cutscene():
+    print('YESSS, PUPPET')
+    zzz(1)
+    print('NOW I CAN FREE MYSELF')
+    zzz(1)
+    print('I WILL DESTROY THE UNIVERSE')
+    zzz(1)
+    print('AND YOU ARE THE NEW DEMON OF GAMBLING')
+    zzz(1)
+    input('You leave the world to die')
+    exit()
+def good_end_cutscene():
+    print('NOOOOO')
+    zzz(1)
+    print('With the Demon of Gambling defeated dungeon dies')
+    zzz(1)
+    print('You escape into the overworld')
+    zzz(1)
+    print('Everyone lives happilly')
+    zzz(1)
+    input('You realize that you saved the world')
+    exit()
+def hamam_end_cutscene():
+    print('Ты достоин...')
+    zzz(1)
+    print('Меллстрой отправляет вас в хаммам')
+    zzz(1)
+    print('Вы в турецком хаммаме')
+    zzz(1)
+    print('Ты выходишь из хаммама')
+    zzz(1)
+    input('Ты понимаешь что сбежал в реальный мир')
     exit()
 def death_cutscene():
     print(f'YOU DIE')
@@ -304,17 +356,80 @@ def death_cutscene():
     zzz(1)
     print(f'GOOD BYE MY PUPPET, BETTER LUCK NEXT TIME')
     zzz(1)
-    print(f'You black out')
+    input(f'You black out')
     exit()
 def intro_cutscene():
     print('THE GAMBLING DUNGEON')
     input('PLAY')
+    t = input("Enable Tutorial (to skip don't write)")
+    if t:
+        print('Welcome to the GAMBLING DUNGEON, little creature')
+        zzz(1)
+        print('Yesss, welcome')
+        zzz(1)
+        print('Take this map')
+        zzz(1)
+        print('You take the map')
+        zzz(1)
+        print('Sorry, but it has no legend :(')
+        zzz(1)
+        print('Yesss, sssorry')
+        zzz(3)
+        print('Oh, I found it!')
+        zzz(1)
+        s = '''Legend:
+        ^ - You
+        @ - Portal (Leads to the deadliest enemy in the act)
+        $ - Shop (Yesss, here you can find me)
+        # - Enemies (Ordinary room with normal enemy with souls inside)
+        X - Elite (Deadly foe with a transform as a reward)
+        & - Campfire (Place to rest or train)
+        ! - ??? (We think if you see this you should o and look what is in there)
+        _ - Empty Room'''
+        print(s)
+        input('Shall we continue ')
+        zzz(1)
+        print('About those dice...')
+        zzz(1)
+        print('You can obtain them from enemies...')
+        zzz(1)
+        print('Or give sssoulsss to me for dice')
+        zzz(1)
+        s = '''List of sides:
+        1-9 - Nums (Play: k of ns you will deal n**k damage)
+        + - Heal (Autoplay: +2, Play: +3 (adds))
+        - - Self Damage (Autoplay: take 1 damage)
+        & - Friendship (Play: deal 3*n (n - amount of + in your deck))
+        ~ - Fish (Does nothing)
+        ^ - Cat (Play: deal 9*n (n - amount of ~ in your hand))
+        ? - ???
+        $ - Soul (Play: focus 1 soul)
+        x - Mult (Autoplay: play every side an additional time)
+        @ - Poison (Play: give the enemy temporary - dice)
+        % - Devil form (Autoplay: gain a temporary x dice)
+        ! - Angel form (Autoplay: gain a temporary + dice)
+        i - Fish form (Autoplay: gain a temporary ~ dice)
+        o - One (Play: deal n damage (n - amount of 1s in your deck))'''
+        print(s)
+        input('Shall we continue ')
+        zzz(1)
+        print('Beat the Act 3 boss and you become D...')
+        zzz(1)
+        print('Oh I meant to say champion!')
+        zzz(1)
+        print('Meet you on the other ssside...')
+        zzz(1)
     print('\n'*45)
     print('You feel being rebuild by someone')
     zzz(1)
     print('You were brought back to life by Gambling Demon')
     zzz(1)
     print('COLLECT THE SOULS')
+    zzz(1)
+    print('\n'*45)
+    print()
+    zzz(1)
+    input('ACT 1 - The Beginning')
     zzz(1)
 def move(player, floor):
     m = input('Where should I go?')
@@ -347,21 +462,21 @@ def fight(e, player):
         input('Player roll! ')
         player.attack(e)
     clear_cache(player)
-    print('You got 1 soul')
-    player.souls += 1
+    print(f'You got {e.souls} souls')
+    player.souls += e.souls
     zzz(1)
 def camp(player, cam):
     print(cam)
     print('You see a campfire. What will you do?')
     zzz(1)
-    print('1) Rest. Heal 15 hp')
+    print('1) Rest. Heal to full')
     zzz(1)
     print('2) Practice. Transform to 6')
     a = input('1) or 2)')
     while a != '1' and a != '2':
         a = input('1) or 2)')
     if a == '1':
-        player + 15
+        player + 1000
         zzz(1)
     else:
         transform(player, 6)
@@ -393,7 +508,7 @@ def reward(player, c, u, r, rew, am=3, boss=False):
         zzz(1)
         player.dpt += 1
         if player.dpt > len(player.dice):
-            self.dpt = len(player.dice)
+            player.dpt = len(player.dice)
         return None
     player.dice.append(a[s-1])
     print('Added', a[s-1])
@@ -417,7 +532,7 @@ def shop(player, c, u, r, sho):
                 if ch[i] != 'Sold Out':
                     print(f'{i+1})', ch[i], f'for {price[i]} souls')
                 else:
-                    print('f{i+1}) Sold Out')
+                    print(f'{i+1}) Sold Out')
             while True:
                 t = input('Choose ')
                 if int(t) in range(4):
@@ -428,15 +543,15 @@ def shop(player, c, u, r, sho):
                         f = False
                         break
                     t -= 1
-                    if price[t] <= player.souls or ch[t] == 'Sold Out':
+                    if price[t] <= player.souls and ch[t] != 'Sold Out':
                         player.souls -= price[t]
-                        print(f'Bought {ch[i]}')
+                        print(f'Bought {ch[t]}')
                         zzz(1)
                         print('Yesss, Soulsss')
                         zzz(1)
                         print('Give more')
-                        player.dice.append(ch[i])
-                        ch[i] = 'Sold Out'
+                        player.dice.append(ch[t])
+                        ch[t] = 'Sold Out'
                         break
                     elif ch[t] == 'Sold Out':
                         continue
@@ -448,3 +563,82 @@ def shop(player, c, u, r, sho):
                         break
         except:
             pass
+def portal(player, a1b, a2b, a3b):
+    ab = (a1b, a2b, a3b)
+    print('Do you want to fight the boss')
+    while True:
+        try:
+            m = input('1-Yes/2-No')
+            if int(m) in (1, 2):
+                m = int(m)
+                break
+        except:
+            pass
+    if m == 2:
+        return False
+    fight(random.choice(ab[player.act-1])(), player)
+    player.act += 1
+    return True
+def bossfight(player, caroline):
+    if not player.z:
+        if caroline.rep < 3:
+            print('Caro: You didnt save me...')
+            zzz(1)
+            print('Caro: You are a Demon...')
+            zzz(1)
+            print('Caro: I ... shall kill ... you')
+            zzz(1)
+            fight(Queen(), player)
+            bad_end_cutscene()
+        else:
+            print('Caroline: We can defeat the demon, Kitty!')
+            zzz(1)
+            print('Caroline: Please, lets save the world')
+            zzz(1)
+            print('You decide to help her')
+            zzz(1)
+            print('YOU FOOLS CAN NEVER DEFEAT ME')
+            zzz(1)
+            fight(DoG(), player)
+            good_end_cutscene()
+    else:
+        f = False
+        for i in player.dice:
+            if isinstance(i, CatDice):
+                f = True
+                break
+        if f:
+            print('Котость!')
+            zzz(1)
+            print('Ты нашел её!')
+            zzz(1)
+            hamam_end_cutscene()
+        else:
+            fight(Mellstroy(), player)
+            hamam_end_cutscene()
+def hamam(player, cam):
+    print(cam)
+    print('You enter a hamam. What will you do')
+    zzz(1)
+    print('1) Rest. Heal to full, obtain ', HealDice())
+    zzz(1)
+    print('2) Пить Чекушку. ???')
+    a = input('1) or 2)')
+    while a != '1' and a != '2':
+        a = input('1) or 2)')
+    if a == '1':
+        player + 1000
+        player.dice.append(HealDice())
+        zzz(1)
+    else:
+        player.z = True
+        input('ACT 0 - Зачекушье')
+        print('\n'*45)
+        zzz(1)
+        print('Вы долго бродите по Зачекушью')
+        zzz(3)
+        print('Вы находите комнату с Меллстроем')
+        zzz(1)
+        print('Он ищет Котость')
+        zzz(1)
+        bossfight(player, Caroline())

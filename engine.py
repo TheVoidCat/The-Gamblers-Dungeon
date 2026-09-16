@@ -17,13 +17,13 @@ def roll(p):
         zzz(1.5/s)
     return d, h
 def calculate(p, target, d, t):
-    for i in '+-&^?$~X@%!o':
+    for i in '+-&^?$~x@%!oi':
         if i not in d:
             d[i] = 0
         if i not in t:
             t[i] = 0
     x = 1
-    for i in range(d['X']):
+    for i in range(d['x']):
         x+=1
         print(f'{p.name} +1 mult')
     for i in range(d['+']*x):
@@ -35,20 +35,23 @@ def calculate(p, target, d, t):
                 if z == 1:
                     c+=1
         target - c
+    for i in range(d['%']):
+        p.dice.append(TempDemonDice())
+        print(f'{p.name} gained strength')
+    for i in range(d['!']):
+        p.dice.append(TempHealDice())
+        print(f'{p.name} gained dexterity')
+    for i in range(d['i']):
+        p.dice.append(TempFishDice())
+        print(f'{p.name} summoned fishes')
     for i in range(d['-']*x):
         p - 1
     
     for i in range(d['$']*x):
         p.souls+=1
-    
+        print(f'{p.name} focused a soul')
     for i in range(t['+']*x):
         p + 3
-    for i in range(t['%']):
-        p.dice.append(TempDemonDice())
-        print(f'{p.name} gained strength')
-    for i in range(t['!']):
-        p.dice.append(TempHealDice())
-        print(f'{p.name} gained dexterity')
     for i in range(t['@']*x):
         target.dice.append(StatusDice())
         print(f'{target.name} was poisoned')
@@ -137,6 +140,15 @@ class DemonDice(Dice):
        super().__init__()
        self.sides = ['x', 'x', 'x', 'x', 'x', 'x']
        self.name = 'Demon dice'
+class FishDice(Dice):
+    def __init__(self):
+       super().__init__()
+       self.sides = ['~', '~', '~', '~', '~', '~']
+       self.name = 'Fish dice'
+class TempFishDice(FishDice):
+    def __init__(self):
+       super().__init__()
+       self.temp = True
 class TempDemonDice(DemonDice):
     def __init__(self):
        super().__init__()
@@ -156,7 +168,7 @@ class Enemy():
     def __init__(self):
         self.maxhp = 50
         self.hp = 50
-        self.souls = 0
+        self.souls = random.randint(1, 4)
         self.dice = []
         self.elite = False
         self.guard = False
@@ -177,7 +189,7 @@ class Enemy():
                 self.hp = 0
                 print(f'{self.name} dies')
                 zzz(1)
-                print(f'Its soul is now yours')
+                print(f'Its souls are now yours')
                 return None
             print(f'{self.name} still stands with {self.hp}')
     def __add__(self, am):
@@ -185,4 +197,17 @@ class Enemy():
         if self.hp > self.maxhp:
             self.hp = self.maxhp
         print(f'{self.name} + {am} hp')
-        zzz(1)
+
+class Elite(Enemy):
+    def __init__(self):
+        super().__init__()
+        self.souls = random.randint(5, 9)
+        self.guard = False
+        self.elite = True
+
+class Boss(Enemy):
+    def __init__(self):
+        super().__init__()
+        self.souls = random.randint(10, 16)
+        self.guard = False
+
