@@ -1,4 +1,4 @@
 ## The-Gamblers-Dungeon
-How to install `pip install -r requirements.txt`
+Only built-in python libraries
 
 Start `python3 main.py`
