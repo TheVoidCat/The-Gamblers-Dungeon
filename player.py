@@ -563,8 +563,8 @@ def shop(player, c, u, r, sho):
                         break
         except:
             pass
-def portal(player, a1b, a2b, a3b):
-    ab = (a1b, a2b, a3b)
+def portal(player, a1b, a2b, caroline):
+    ab = (a1b, a2b)
     print('Do you want to fight the boss')
     while True:
         try:
@@ -576,6 +576,10 @@ def portal(player, a1b, a2b, a3b):
             pass
     if m == 2:
         return False
+    if player.act == 3:
+        bossfight(player, caroline)
+        #instead of normal boss we have a special ending boss
+        return True
     fight(random.choice(ab[player.act-1])(), player)
     player.act += 1
     return True

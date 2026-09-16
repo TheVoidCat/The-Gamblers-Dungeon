@@ -24,7 +24,6 @@ a2e = (Nightmare, Hydra, Maniac, Mutant, Chained)
 a3e = (Giant, Head, Gargoyle, LilGod, Bloom)
 a1b = (Serpent, DeadKing, Ghost)
 a2b = (Tyrant, Zapper, Blessed)
-a3b = (Worm)
 player = Player()
 caroline = Caroline()
 ending = 0
@@ -67,20 +66,7 @@ while game:
         reward(player, common_pool, uncommon_pool, rare_pool, rew)
         transform(player, random.choice((1, 2, 3, 4, 5, 6, 7, 8, 9, '+', '-', '&', '^', '?', '$', '~', 'x', '@', '%', '!', 'o', 'i')))
     elif floor[player.pos[0]][player.pos[1]] == '@':
-        if player.act == 3:
-            print('Do you want to fight the boss')
-            while True:
-                try:
-                    m = input('1-Yes/2-No')
-                    if int(m) in (1, 2):
-                        m = int(m)
-                        break
-                except:
-                    pass
-            if m == 1:
-                bossfight(player, caroline)
-                break
-        elif portal(player, a1b, a2b, a3b):
+        if portal(player, a1b, a2b, caroline):
             floor, sightmap = next_act(player, sightmap, floor)
     elif floor[player.pos[0]][player.pos[1]] == '!':
         caroline.dialog(player)
