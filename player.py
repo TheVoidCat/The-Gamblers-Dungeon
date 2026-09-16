@@ -44,7 +44,7 @@ class Player():
                         continue
                 else:
                     continue
-                for i in range(self.dpt):
+                for i in range(len(t)):
                     t[i] = a[t[i]]
                 d = dict()
                 for i in t:
