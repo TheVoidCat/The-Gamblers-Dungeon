@@ -80,7 +80,7 @@ while game:
             if m == 1:
                 bossfight(player, caroline)
                 break
-        if portal(player, a1b, a2b, a3b):
+        elif portal(player, a1b, a2b, a3b):
             floor, sightmap = next_act(player, sightmap, floor)
     elif floor[player.pos[0]][player.pos[1]] == '!':
         caroline.dialog(player)
