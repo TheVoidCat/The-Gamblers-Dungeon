@@ -79,7 +79,7 @@ def calculate(p, target, d, t):
             c1 = random.randint(1, 6)
             c2 = random.randint(1, 6)
             c3 = random.randint(1, 6)
-            t - c1*c2*c3
+            target - c1*c2*c3
     k = {}
     for i in t:
         try:
