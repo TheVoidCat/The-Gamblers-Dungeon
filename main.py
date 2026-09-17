@@ -65,6 +65,7 @@ while game:
         fight(e, player)
         reward(player, common_pool, uncommon_pool, rare_pool, rew)
         transform(player, random.choice((1, 2, 3, 4, 5, 6, 7, 8, 9, '+', '-', '&', '^', '?', '$', '~', 'x', '@', '%', '!', 'o', 'i')))
+        floor[player.pos[0]][player.pos[1]] = '_'
     elif floor[player.pos[0]][player.pos[1]] == '@':
         if portal(player, a1b, a2b, caroline):
             floor, sightmap = next_act(player, sightmap, floor)
